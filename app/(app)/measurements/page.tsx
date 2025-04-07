@@ -1,8 +1,11 @@
+import { Suspense } from "react";
+import { MeasurementFields } from "@/schemas/measurement_zod";
 import BackButton from "@/components/BackButton";
+import MeasurementsChart from "@/components/MeasurementsChart";
 import MeasurementsTable, {
   MeasurementTableProps,
 } from "@/components/MeasurementTable";
-import { MeasurementFields } from "@/schemas/measurement_zod";
+import Spinner from "@/components/Spinner";
 
 const MeasurementsPage = async () => {
   const tableData: MeasurementTableProps<MeasurementFields> = {
@@ -16,7 +19,9 @@ const MeasurementsPage = async () => {
     <>
       <BackButton text="Back" link="/" variant="ghost" />
       <MeasurementsTable {...tableData} />
-      <p>chart here</p>
+      <Suspense fallback={<Spinner text="Processing chart..." />}>
+        <MeasurementsChart />
+      </Suspense>
     </>
   );
 };
