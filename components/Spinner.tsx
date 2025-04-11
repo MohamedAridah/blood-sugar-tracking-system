@@ -22,11 +22,13 @@ const spinnerVariants = cva(
 type SpinnerProps = ComponentProps<"div"> & {
   text?: string;
   fullScreen?: boolean;
+  height?: string;
 } & VariantProps<typeof spinnerVariants>;
 
 const Spinner = ({
   text,
   fullScreen = false,
+  height,
   size,
   ...props
 }: SpinnerProps) => {
@@ -35,9 +37,12 @@ const Spinner = ({
       role="alert"
       aria-live="assertive"
       aria-busy="true"
-      className={clsx(
-        "flex flex-col items-center gap-2 justify-center space-x-2",
-        fullScreen && "h-screen w-full"
+      className={cn(
+        clsx(
+          "flex flex-col items-center gap-2 justify-center space-x-2",
+          height && `h-[${height}vh]  w-full`,
+          fullScreen && "h-screen  w-full"
+        )
       )}
       {...props}
     >

@@ -1,3 +1,4 @@
+import { getMeasurements } from "@/actions/measurements";
 import {
   Card,
   CardContent,
@@ -6,23 +7,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Chart from "@/components/Chart";
-import { getMeasurements } from "@/actions/measurements";
-import NotificationMessage from "./NotificationMessage";
+import NotificationMessage from "@/components/NotificationMessage";
 import { ChartArea } from "lucide-react";
-import delay from "@/utils/delay";
+import { MeasurementsSearchParamsType } from "@/app/searchParams";
 
 type MeasurementsChartProps = {
   title?: string;
   description?: string;
-  limit?: number;
+  filters?: MeasurementsSearchParamsType;
 };
 
 export default async function MeasurementsChart({
   title,
   description,
-  limit,
+  filters,
 }: MeasurementsChartProps) {
-  const { measurements } = await getMeasurements(limit);
+  const { measurements } = await getMeasurements({ ...filters });
 
   if (measurements.length == 0) {
     return (

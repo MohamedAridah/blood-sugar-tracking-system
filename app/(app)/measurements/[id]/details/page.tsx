@@ -24,7 +24,7 @@ const MeasurementDetailsPage = async ({ params }: Props) => {
 };
 
 export const generateStaticParams = async () => {
-  const {measurements} = await getMeasurements();
+  const { measurements } = await getMeasurements({});
   return measurements.map((measurement) => ({
     id: measurement.id,
   }));

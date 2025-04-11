@@ -27,6 +27,7 @@ import { MeasurementFields } from "@/schemas/measurement_zod";
 import { getMeasurements } from "@/actions/measurements";
 import NotificationMessage from "@/components/NotificationMessage";
 import MeasurementDeleteBtn from "@/components/util-components/MeasurementDeleteBtn";
+import { type MeasurementsSearchParamsType } from "@/app/searchParams";
 
 export type Table<T> = {
   keys: string[];
@@ -36,15 +37,17 @@ export type Table<T> = {
 export type MeasurementTableProps<T> = {
   table: Table<T>;
   title?: string;
-  limit?: number;
+  filters?: MeasurementsSearchParamsType;
 };
 
 const MeasurementsTable = async <T extends object>({
   table,
   title,
-  limit,
+  filters,
 }: MeasurementTableProps<T>) => {
-  const { measurements, count } = await getMeasurements(limit);
+  console.log("Table filters", filters);
+
+  const { measurements, count } = await getMeasurements({ ...filters });
 
   if (measurements.length === 0)
     return (
@@ -126,7 +129,7 @@ const MeasurementsTable = async <T extends object>({
           })}
         </TableBody>
       </Table>
-      {limit && (
+      {filters?.limit && (
         <Button variant="outline" className="mx-auto flex mt-4">
           <Link
             href="/measurements/overview"

@@ -5,26 +5,47 @@ import { redirect } from "next/navigation";
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { MeasurementFields } from "@/schemas/measurement_zod";
 import delay from "@/utils/delay";
+import { MeasurementsSearchParamsType } from "@/app/searchParams";
+import { Prisma } from "@prisma/client";
+
+type GetMeasurementsParams = MeasurementsSearchParamsType;
 
 export const getMeasurements = unstable_cache(
-  async (limit?: number) => {
+  async (params: GetMeasurementsParams) => {
     console.log("Getting measurements");
+    console.log("Params: ", params);
+
     delay();
     const measurements = await prisma.measurements.findMany({
-      take: limit,
+      take: params.limit || 10,
       orderBy: {
-        createdAt: "desc",
+        createdAt: (params.sort as Prisma.SortOrder) || "desc",
       },
+      where: params.search
+        ? {
+            OR: [
+              {
+                measurementType: {
+                  contains: params.search,
+                },
+              },
+              {
+                notes: {
+                  contains: params.search,
+                },
+              },
+            ],
+          }
+        : {},
     });
-    const count = await prisma.measurements.count()
+    const count = await prisma.measurements.count();
     console.log(measurements);
     console.log("Got measurements");
-    return {measurements,count};
+    return { measurements, count };
   },
-  ["measurements__key"],
+  ["measurements"],
   {
-    tags: ["measurements__key"],
-    revalidate: false,
+    tags: ["measurements"],
   }
 );
 
@@ -77,7 +98,7 @@ export const addMeasurement = async (formData: MeasurementFields) => {
     },
   });
   console.log("measurement created");
-  revalidateTag("measurements__key");
+  revalidateTag("measurements");
   redirect("/measurements");
 };
 
@@ -97,7 +118,7 @@ export const updateMeasurement = async (
   console.log("measurement updated");
   // revalidateTag(`measurement:${id}`);
   revalidatePath(`/measurements/${id}/details`);
-  revalidateTag("measurements__key");
+  revalidateTag("measurements");
   redirect("/measurements");
 };
 
@@ -106,6 +127,6 @@ export const deleteMeasurement = async (id: string) => {
   delay();
   const measurement = await prisma.measurements.delete({ where: { id } });
   console.log("deleted measurement");
-  revalidateTag("measurements__key");
+  revalidateTag("measurements");
   redirect("/measurements");
 };

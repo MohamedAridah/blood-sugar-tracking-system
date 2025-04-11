@@ -34,22 +34,22 @@ type Props = {
 
 const MeasurementForm = ({ data, formHandler }: Props) => {
   const form = useForm<MeasurementFields>({
-    defaultValues: {
-      userId: "67efd23991c18e2aef414bec",
-      bloodSugarLevel: 222,
-      measurementType: "",
-      insulinDose: 1 || undefined,
-      notes: undefined,
-      createdAt: new Date(),
-    },
     // defaultValues: {
     //   userId: "67efd23991c18e2aef414bec",
-    //   bloodSugarLevel: data?.bloodSugarLevel || undefined,
-    //   measurementType: data?.measurementType || "",
-    //   insulinDose: data?.insulinDose || undefined,
-    //   notes: data?.notes || undefined,
-    //   createdAt: data?.createdAt || new Date(),
+    //   bloodSugarLevel: 222,
+    //   measurementType: "",
+    //   insulinDose: 1 || undefined,
+    //   notes: undefined,
+    //   createdAt: new Date(),
     // },
+    defaultValues: {
+      userId: "67efd23991c18e2aef414bec",
+      bloodSugarLevel: data?.bloodSugarLevel || undefined,
+      measurementType: data?.measurementType || "",
+      insulinDose: data?.insulinDose || undefined,
+      notes: data?.notes || undefined,
+      createdAt: data?.createdAt || new Date(),
+    },
     resolver: zodResolver(MeasurementSchema),
   });
 
