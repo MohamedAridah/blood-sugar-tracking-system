@@ -29,40 +29,11 @@ const items = [
     url: "/measurements",
     icon: Inbox,
   },
-  {
-    title: "Measurement overview",
-    url: "/measurements/overview",
-    icon: Database,
-  },
+
   {
     title: "New Measurement",
     url: "/measurements/new",
     icon: Plus,
-  },
-  {
-    title: "Edit Measurement",
-    url: "/measurements/67edbe23bb188a7911515805/edit",
-    icon: Edit,
-  },
-  {
-    title: "Details Measurement",
-    url: "/measurements/67edbe23bb188a7911515805/details",
-    icon: Info,
-  },
-  {
-    title: "Tresiba",
-    url: "/tresiba",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "/search",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
   },
 ];
 

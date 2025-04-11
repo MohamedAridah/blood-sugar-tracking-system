@@ -33,10 +33,10 @@ export default function ThemeToggler() {
           return (
             <DropdownMenuItem
               key={theme}
-              className="capitalize flex items-center gap-2"
+              className="capitalize flex justify-between items-center gap-2"
               onClick={() => setTheme(theme)}
             >
-              {currentTheme === theme && <Check />} {theme}
+              {theme} {currentTheme === theme && <Check />}
             </DropdownMenuItem>
           );
         })}

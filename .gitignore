@@ -40,7 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-@backend/node_modules
-@backend/.env*
+/@backend
 userstory.md
 Notes.md
