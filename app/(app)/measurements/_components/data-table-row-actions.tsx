@@ -14,7 +14,6 @@ import {
   Edit,
   MoreHorizontal,
   SquareArrowOutUpRight,
-  Trash,
   Trash2,
 } from "lucide-react";
 import { Row } from "@tanstack/react-table";
@@ -47,7 +46,7 @@ export function DataTableRowActions<TData extends WithId<string>>({
         description="This action cannot be undone. This will permanently delete your measurement and remove your data from our servers."
         actionButton={
           <Button
-            className="text-red-500 bg-red-200"
+            className="text-red-500 bg-red-200 hover:bg-red-500 hover:text-white transition-all"
             onClick={async () => {
               const result = await deleteMeasurement(measurementId);
               if (result?.error) {

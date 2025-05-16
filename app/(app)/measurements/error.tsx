@@ -12,7 +12,7 @@ const MeasurementError = ({ error, reset }: Props) => {
     return (
       <NotificationMessage
         title={error.message || "Failed to get your measurements"}
-        subTitle={error?.message}
+        description={error?.message}
       />
     );
   }

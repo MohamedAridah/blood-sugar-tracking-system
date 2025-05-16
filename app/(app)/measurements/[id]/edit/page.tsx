@@ -16,14 +16,16 @@ const EditMeasurement = async ({ params }: Props) => {
   const measurementId = (await params).id;
   const measurementData = await getMeasurement(measurementId);
 
-  if (!measurementData) {
+  if ("error" in measurementData) {
     return (
       <>
         <BackButton />
         <NotificationMessage
-          title={`No Data. id #${measurementId} is not found to update.`}
+          title="Measurement not found!"
+          description={measurementData.error.message}
           icon={PackageXIcon}
           variant="gray"
+          theme="no-border"
         />
       </>
     );
@@ -34,7 +36,7 @@ const EditMeasurement = async ({ params }: Props) => {
       <BackButton />
       <h3 className="text-lg mb-2 font-semibold">Update Meal Measurement</h3>
       <div className="flex items-center gap-1 mt-2 mb-4">
-        <Info className="text-blue-800/70 text-[1.05em]" />
+        <Info className="text-blue-800/70" size={17} />
         <p className="text-sm text-muted-foreground">
           You are updating{" "}
           <span className="font-semibold text-foreground/90">

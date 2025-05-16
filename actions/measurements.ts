@@ -21,7 +21,7 @@ export const findMeasurementById = async (measurementId: string) => {
     where: { id: measurementId },
   });
   if (!isFound)
-    throw new Error(`Measurement is width id #${measurementId}not found`);
+    throw new Error(`Measurement with id #${measurementId} is not found`);
   return isFound;
 };
 
@@ -72,37 +72,42 @@ export const getMeasurements = unstable_cache(
 );
 
 export const getMeasurement = async (measurementId: string) => {
-  try {
-    console.log("Getting measurement details with id of #", measurementId);
-    delay();
-    const measurement = await prisma.measurement.findUnique({
-      where: { id: measurementId },
-      include: {
-        insulinDose: {
-          select: {
-            units: true,
-            notes: true,
-            createdAt: true,
+  return unstable_cache(
+    async () => {
+      console.log(`Fetching Measurement details for ID: ${measurementId}`);
+      try {
+        const measurement = await prisma.measurement.findUnique({
+          where: { id: measurementId },
+          include: {
+            insulinDose: {
+              select: {
+                units: true,
+                notes: true,
+                createdAt: true,
+              },
+            },
           },
-        },
-      },
-    });
+        });
 
-    if (!measurement) {
-      console.log(
-        "Measurement details for id of #",
-        measurementId + " not found"
-      );
-      throw new Error("Measurement not found");
+        if (!measurement) {
+          const message = `Measurement with ID ${measurementId} not found`;
+          console.warn(message);
+          throw new Error(message);
+        }
+
+        console.log("Measurement retrieved successfully:", measurement);
+        return measurement;
+      } catch (error) {
+        const errorMessage = getErrorMessage(error);
+        console.log("Error In getMeasurement: ", error);
+        return { error: errorMessage };
+      }
+    },
+    [`${MEASUREMENTS_TAG}-${measurementId}`],
+    {
+      tags: [`${MEASUREMENTS_TAG}-${measurementId}`],
     }
-
-    console.log("Got measurement details");
-    console.log(measurement);
-    return measurement;
-  } catch (error) {
-    console.log("Error With getMeasurement: ", error);
-    throw new Error("Unable to get measurement");
-  }
+  )();
 };
 
 export const deleteMeasurement = async (id: string) => {
@@ -186,6 +191,7 @@ export const updateBeforeMealReading = async (
     };
   }
   revalidateTag(MEASUREMENTS_TAG);
+  revalidateTag(`${MEASUREMENTS_TAG}-${measurementId}`);
 };
 
 export const addAfterMealReading = async (
@@ -263,4 +269,6 @@ export const updateAfterMealReading = async (
   }
 
   revalidateTag(MEASUREMENTS_TAG);
+  revalidateTag(`${MEASUREMENTS_TAG}-${measurementId}`);
+
 };

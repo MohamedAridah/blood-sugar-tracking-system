@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  CakeIcon,
   Calendar,
   Database,
   Edit,
@@ -35,6 +36,11 @@ const items = [
     title: "New Measurement",
     url: "/measurements/new",
     icon: Plus,
+  },
+  {
+    title: "Meals",
+    url: "/meals/",
+    icon: CakeIcon,
   },
   {
     title: "New Meal",

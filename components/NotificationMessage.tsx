@@ -1,10 +1,9 @@
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { LucideIcon, TriangleAlert } from "lucide-react";
-import { Button } from "./ui/button";
-import Link from "next/link";
+import React from "react";
 
-const NotificationMessageVariants = cva("", {
+const IconVariants = cva("mb-2", {
   variants: {
     variant: {
       success: "text-green-400",
@@ -24,34 +23,47 @@ const NotificationMessageVariants = cva("", {
   },
 });
 
-type NotificationMessageProps = {
+const MessageVariants = cva(
+  "min-h-52 p-5 rounded-lg flex items-center justify-center my-4",
+  {
+    variants: {
+      theme: {
+        border: "border shadow-sm",
+        "no-border": "shadow-none border-0",
+      },
+    },
+    defaultVariants: {
+      theme: "border",
+    },
+  }
+);
+
+type Props = {
+  children?: React.ReactNode;
   title: string;
-  subTitle?: string;
+  description?: string;
   icon?: LucideIcon;
-  path?: string;
-  pathText?: string;
-} & VariantProps<typeof NotificationMessageVariants>;
+  className?: string;
+} & VariantProps<typeof IconVariants> &
+  VariantProps<typeof MessageVariants>;
 
 const NotificationMessage = ({
-  icon: Icon = TriangleAlert,
+  children,
   title,
-  subTitle,
+  description,
+  icon: Icon = TriangleAlert,
+  className,
   size,
   variant,
-  path,
-  pathText,
-}: NotificationMessageProps) => {
+  theme,
+}: Props) => {
   return (
-    <div className="min-h-[200px] p-5 border rounded-lg shadow-sm flex items-center justify-center my-4">
+    <div className={cn(MessageVariants({ theme }), className)}>
       <div className="flex flex-col items-center text-center">
-        <Icon className={cn(NotificationMessageVariants({ size, variant }))} />
-        <h1 className="text-[15px]">{title}</h1>
-        {subTitle && <p className="text-sm text-slate-700 mt-1">{subTitle}</p>}
-        {path && (
-          <Button asChild variant="outline" className="mt-2">
-            <Link href={path}>{pathText}</Link>
-          </Button>
-        )}
+        <Icon className={cn(IconVariants({ size, variant }))} />
+        <h1 className="text-sm  text-slate-700 font-semibold">{title}</h1>
+        {description && <p className="text-sm text-slate-700">{description}</p>}
+        {children}
       </div>
     </div>
   );

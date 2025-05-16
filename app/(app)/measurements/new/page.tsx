@@ -8,9 +8,14 @@ import MealTimeTriggersList from "@/components/util-components/MealTimeTriggersL
 import InsulinForm__Create from "@/components/forms/InsulinForm__Create";
 import NotificationMessage from "@/components/NotificationMessage";
 import { FileArchiveIcon, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import MealsDropdown from "./meals-dropdown";
+
+const meals_list_limit: number = 3;
 
 const AddMeasurement = async () => {
   const meals = await getUserMeals("680fd0ec954a447f2cef1b0c");
+  const showMoreMeals = meals.length > meals_list_limit;
 
   if (meals.length === 0) {
     return (
@@ -18,12 +23,14 @@ const AddMeasurement = async () => {
         <BackButton />
         <NotificationMessage
           title="You have no meals yet"
-          subTitle="Add your meals whcich measurements will be related to"
+          description="Add your meals whcich measurements will be related to"
           variant="gray"
           icon={FileArchiveIcon}
-          path="/meals/new"
-          pathText="Add Meal"
-        />
+        >
+          <Button variant="outline" className="mt-2" asChild>
+            <Link href="/meals/new">Add Meal</Link>
+          </Button>
+        </NotificationMessage>
       </>
     );
   }
@@ -33,12 +40,10 @@ const AddMeasurement = async () => {
       <BackButton text="Back to Measurements" />
 
       <section className="max-w-[700px]">
-        <Tabs defaultValue={"breakfast"} className="w-full">
+        <Tabs defaultValue={meals[0].name}>
           {/* User Main Meals List */}
-          <TabsList
-            className={`grid grid-cols-[repeat(auto-fit,_minmax(0,_1fr))] w-auto md:w-8/12 md:gap-1`}
-          >
-            {meals.map((meal) => (
+          <TabsList className="justify-start overflow-x-auto sm:overflow-x-hidden w-full md:max-w-fit h-auto sm:h-9">
+            {meals.slice(0, meals_list_limit).map((meal) => (
               <TabsTrigger
                 key={meal.id}
                 value={meal.name.toLowerCase()}
@@ -48,15 +53,14 @@ const AddMeasurement = async () => {
                 {meal.name.toLowerCase()}
               </TabsTrigger>
             ))}
+            {showMoreMeals && <MealsDropdown meals={meals} />}
             <Link
               href="/meals/new"
-              className="flex justify-center items-center justify-self-end px-4 border-l border-l-[#737373]/20"
+              className="flex justify-center items-center justify-self-end ml-3 px-2 border-l border-l-[#737373]/20"
               role="link"
+              aria-label="Go to add new meal page"
             >
-              <Plus
-                aria-label="add new meal"
-                className="text-sm text-[#737373]/80 hover:text-[#737373]"
-              />
+              <Plus className="size-5 text-[#737373]/80 hover:text-[#737373]" />
             </Link>
           </TabsList>
 
@@ -66,7 +70,6 @@ const AddMeasurement = async () => {
               <Tabs defaultValue="before">
                 {/* Main Meal Times List*/}
                 <MealTimeTriggersList />
-
                 <TabsContent value="before">
                   <MeasurementForm__Create__Before
                     formData={{

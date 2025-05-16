@@ -28,6 +28,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { Measurement } from "@prisma/client";
 import React, { useImperativeHandle, useRef } from "react";
+import { format } from "date-fns";
 
 type Props = {
   data?: Partial<Measurement> & Partial<MeasurementFields>;
@@ -117,7 +118,7 @@ const MeasurementForm = React.forwardRef<MyFormHandle, Props>(
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value?.toDateString()}
+                        {format(field.value as Date, "PPPP")}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>

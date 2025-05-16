@@ -45,7 +45,7 @@ const BackButton = ({
     <Button
       variant={variant}
       className={clsx(
-        "group inline-flex items-center gap-2 font-semibold my-3 text-sm text-gray-500 hover:text-gray-600 hover:underline",
+        "group inline-flex items-center gap-2 font-semibold px-0 my-3 text-sm text-gray-500 hover:text-gray-600 hover:underline",
         className
       )}
       onClick={() => router.back()}

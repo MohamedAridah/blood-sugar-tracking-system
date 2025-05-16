@@ -3,15 +3,20 @@ import clsx from "clsx";
 
 type IconMenuProps = {
   icon: ReactNode;
-  text: string;
+  text?: string;
   className?: string;
 };
 
 const IconMenu = ({ icon, text, className }: IconMenuProps) => {
   return (
-    <div className={clsx("flex items-center gap-1 text-center space-x-1", className)}>
+    <div
+      className={clsx(
+        "flex items-center gap-1 text-center space-x-1",
+        className
+      )}
+    >
       {icon}
-      <span className="text-sm">{text}</span>
+      {text && <span className="text-sm">{text}</span>}
     </div>
   );
 };
