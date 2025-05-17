@@ -128,6 +128,8 @@ export const addBeforeMealReading = async (
   measurementData: Measurement_Picked & MeasurementWithBefore
 ) => {
   console.log("Creating New Before Measurement");
+  console.log("Input", measurementData);
+
   try {
     const isFound = await findMeasurement(
       {
@@ -149,7 +151,7 @@ export const addBeforeMealReading = async (
     }
 
     console.log("Creating New Before Measurement Because It's not Exists yet.");
-    await prisma.measurement.create({
+    const result = await prisma.measurement.create({
       data: {
         userId: measurementData.userId,
         mealId: measurementData.mealId,
@@ -158,6 +160,8 @@ export const addBeforeMealReading = async (
         date: measurementData.date,
       },
     });
+    console.log("Output", result);
+    return result;
   } catch (error: unknown) {
     console.log("Error With createMeasurement__before: ", error);
     return {
@@ -270,5 +274,4 @@ export const updateAfterMealReading = async (
 
   revalidateTag(MEASUREMENTS_TAG);
   revalidateTag(`${MEASUREMENTS_TAG}-${measurementId}`);
-
 };

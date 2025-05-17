@@ -7,7 +7,6 @@ import { findMeasurement } from "@/actions/measurements";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { MEASUREMENTS_TAG } from "@/utils/redirect";
 
-
 export const addInsulinReading = async (measurementData: InsulinDose) => {
   try {
     const isFound = await findMeasurement(
@@ -93,6 +92,7 @@ export const updateInsulinReading = async (
   console.log("Incomming: ", measurementData);
 
   console.log("Updating Insulin dose Measurement");
+
   try {
     const isFound = await prisma.insulinDose.findUnique({
       where: { measurementId },
@@ -123,4 +123,5 @@ export const updateInsulinReading = async (
   }
 
   revalidateTag(MEASUREMENTS_TAG);
+  revalidateTag(`${MEASUREMENTS_TAG}-${measurementId}`);
 };
