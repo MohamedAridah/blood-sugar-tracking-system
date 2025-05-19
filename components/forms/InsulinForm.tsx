@@ -95,7 +95,7 @@ const InsulinForm = React.forwardRef<MyFormHandle, Props>(
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {field.value?.toDateString()}
+                        {new Date(field.value as Date)?.toDateString()}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
