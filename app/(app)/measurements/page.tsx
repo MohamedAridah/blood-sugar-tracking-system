@@ -16,7 +16,7 @@ const MeasurementsPage = async () => {
     <>
       <div className="flex justify-between items-center mb-4">
         <BackButton link="/" className="mb-0" />
-        <Button size='sm' asChild>
+        <Button size="sm" asChild>
           <Link href="/measurements/new" className="flex items-center gap-1">
             Add Measurement <ArrowRight className="w-4 h-4" />
           </Link>
@@ -27,9 +27,9 @@ const MeasurementsPage = async () => {
         <MeasurementTable data={measurements} columns={columns} />
       </Suspense>
 
-      {/* <Suspense fallback={<Spinner text="Processing chart..." height="30" />}>
-        <MeasurementsChart filters={{ limit, sort, search }} />
-      </Suspense> */}
+      <Suspense fallback={<Spinner text="Processing chart..." height="30" />}>
+        <MeasurementsChart title="Analytics For your Measurements" />
+      </Suspense>
     </>
   );
 };

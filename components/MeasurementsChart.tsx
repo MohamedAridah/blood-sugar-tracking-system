@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/card";
 import Chart from "@/components/Chart";
 import NotificationMessage from "@/components/NotificationMessage";
-import { ChartArea } from "lucide-react";
 import { MeasurementsSearchParamsType } from "@/app/searchParams";
+import { ChartColumnBig } from "lucide-react";
 
 type MeasurementsChartProps = {
   title?: string;
@@ -27,19 +27,23 @@ export default async function MeasurementsChart({
   if (measurements.length == 0) {
     return (
       <NotificationMessage
-        title="No Data for chart"
-        icon={ChartArea}
+        title="No data found for chart"
+        icon={ChartColumnBig}
+        theme="no-border"
         variant="gray"
+        className="mt-10"
       />
     );
   }
 
   return (
-    <Card className=" mt-10 shadow-sm">
+    <Card className="mt-10 shadow-sm">
       <CardHeader>
         <CardTitle>{title ? title : "Analytics For This Day"}</CardTitle>
         <CardDescription>
-          {description ? description : "Measurements Per Meal"}
+          {description
+            ? description
+            : "Measurements per Meal (before & after) Meal"}
         </CardDescription>
       </CardHeader>
       <CardContent>
