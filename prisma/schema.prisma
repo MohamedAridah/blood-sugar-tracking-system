@@ -20,7 +20,7 @@ model User {
 
 model Meal {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  user         User          @relation(fields: [userId], references: [id])
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String        @db.ObjectId
   name         String        @unique
   description  String?
@@ -34,10 +34,10 @@ model Meal {
 
 model Measurement {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.ObjectId
 
-  meal   Meal?   @relation(fields: [mealId], references: [id])
+  meal   Meal?   @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId String? @db.ObjectId
 
   insulinDose InsulinDose? // 1:1 back-reference
@@ -45,27 +45,29 @@ model Measurement {
   beforeMeal SugarReading?
   afterMeal  SugarReading?
 
-  mealType String // explicitly saved here
-  date     String // custom type to store only the date (e.g., "2025-04-28")
+  mealType   String // explicitly saved here
+  date       DateTime
+  dateString String // custom type to store only the date (e.g., "2025-04-28")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, mealId, mealType, date]) // This enforces 1 per user/meal/date
+  @@unique([userId, mealId, mealType, dateString]) // This enforces 1 per user/meal/date
 }
 
 model InsulinDose {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.ObjectId
 
-  measurement   Measurement? @relation(fields: [measurementId], references: [id])
+  measurement   Measurement? @relation(fields: [measurementId], references: [id], onDelete: Cascade)
   measurementId String?      @unique @db.ObjectId // Enforce 1:1
 
-  meal   Meal?   @relation(fields: [mealId], references: [id])
+  meal   Meal?   @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId String? @db.ObjectId
 
-  date String // custom type to store only the date (e.g., "2025-04-28")
+  date       DateTime
+  dateString String // custom type to store only the date (e.g., "2025-04-28")
 
   units Float
   type  String
