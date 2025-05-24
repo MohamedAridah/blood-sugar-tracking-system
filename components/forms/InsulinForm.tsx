@@ -25,10 +25,12 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { InsulinDose } from "@prisma/client";
+import formatDate from "@/utils/formatDate";
 
 type Props = {
   data?: Partial<InsulinDose> & Partial<InsulinFields>;
   formHandler: SubmitHandler<InsulinFields>;
+  formType?: "new" | "edit";
 };
 
 export type MyFormHandle = {
@@ -36,12 +38,12 @@ export type MyFormHandle = {
 };
 
 const InsulinForm = React.forwardRef<MyFormHandle, Props>(
-  ({ data, formHandler }, ref) => {
+  ({ data, formHandler, formType = "new" }, ref) => {
     const form = useForm<InsulinFields>({
       defaultValues: {
         insulinDose: data?.insulinDose || undefined,
         notes: data?.notes || "",
-        createdAt: data?.createdAt || new Date(),
+        createdAt: data?.createdAt ? new Date(data?.createdAt) : new Date(),
       },
       resolver: zodResolver(InsulinSchema),
     });
@@ -89,13 +91,18 @@ const InsulinForm = React.forwardRef<MyFormHandle, Props>(
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
+                        disabled={formType === "edit"}
                         variant="outline"
                         className={clsx(
                           "text-left font-normal ",
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {new Date(field.value as Date)?.toDateString()}
+                        {field.value ? (
+                          formatDate(field.value, "PPPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>

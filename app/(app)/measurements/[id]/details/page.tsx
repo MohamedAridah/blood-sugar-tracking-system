@@ -4,6 +4,7 @@ import { Measurement } from "@prisma/client";
 import MeasurementDetails from "@/components/MeasurementDetails";
 import Spinner from "@/components/Spinner";
 import BackButton from "@/components/BackButton";
+import formatDate from "@/utils/formatDate";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -24,6 +25,7 @@ const MeasurementDetailsPage = async ({ params }: Props) => {
       >
         {/* <MeasurementDetails measurementId={(await params).id} /> */}
         <p>Measurement details component</p>
+        <p>{formatDate(measurement.createdAt)}</p>
       </Suspense>
     </>
   );

@@ -6,6 +6,7 @@ import DataTableRowActions from "./data-table-row-actions";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "./data-table-column-header";
+import formatDate from "@/utils/formatDate";
 
 export type MeasurementColumns = Pick<Measurement, "date" | "mealType"> & {
   before: number;
@@ -40,7 +41,7 @@ export const columns: ColumnDef<Measurement>[] = [
   },
   {
     accessorKey: "insulinDose",
-    header: 'Insulin Dose',
+    header: "Insulin Dose",
     cell: ({ row }) => {
       const value: InsulinDose = row.getValue("insulinDose");
       return value == null ? "-" : value.units;
@@ -51,6 +52,10 @@ export const columns: ColumnDef<Measurement>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Date" />
     ),
+    cell: ({ row }) => {
+      const date: Date = row.getValue("date");
+      return formatDate(date, "yyyy-MM-dd");
+    },
   },
   {
     id: "actions",

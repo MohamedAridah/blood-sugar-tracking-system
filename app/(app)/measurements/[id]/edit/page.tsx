@@ -6,6 +6,7 @@ import MeasurementForm__UpdateBefore from "@/components/forms/MeasurementForm__U
 import NotificationMessage from "@/components/NotificationMessage";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import MealTimeTriggersList from "@/components/util-components/MealTimeTriggersList";
+import formatDate from "@/utils/formatDate";
 import { Info, PackageXIcon } from "lucide-react";
 
 type Props = {
@@ -44,7 +45,7 @@ const EditMeasurement = async ({ params }: Props) => {
           </span>{" "}
           measurement for{" "}
           <span className="font-semibold text-foreground/90">
-            {measurementData.date}
+            {formatDate(measurementData.date, "EEEE, MMMM dd, yyyy")}
           </span>
         </p>
       </div>

@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { REDIRECT_AFTER_MEASUREMENT } from "@/utils/redirect";
 
 type Props = {
-  formData: Pick<Partial<Measurement>, "beforeMeal" | "afterMeal">;
+  formData: Pick<Partial<Measurement>, "beforeMeal" | "afterMeal" | "date">;
   measurementId: string;
 };
 
@@ -19,14 +19,14 @@ const MeasurementForm__UpdateBefore = ({ measurementId, formData }: Props) => {
   const passedData: MeasurementFields = {
     bloodSugarLevel: formData.beforeMeal?.value!!,
     notes: formData.beforeMeal?.note!!,
-    createdAt: formData.beforeMeal?.createdAt,
+    createdAt: formData.date,
   };
+
   const onSubmit: SubmitHandler<MeasurementFields> = async (data) => {
     const result = await updateBeforeMealReading(measurementId, {
       beforeMeal: {
         value: data.bloodSugarLevel,
         note: data.notes as string,
-        createdAt: formData.beforeMeal?.createdAt as Date,
       },
     });
 
@@ -38,7 +38,9 @@ const MeasurementForm__UpdateBefore = ({ measurementId, formData }: Props) => {
     }
   };
 
-  return <MeasurementForm data={passedData} formHandler={onSubmit} />;
+  return (
+    <MeasurementForm data={passedData} formHandler={onSubmit} formType="edit" />
+  );
 };
 
 export default MeasurementForm__UpdateBefore;

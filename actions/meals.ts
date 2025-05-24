@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { Meal } from "@prisma/client";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { getErrorMessage } from "@/utils/getErrorMessage";
-import { MEALS_TAG } from "@/utils/redirect";
+import { MEALS_TAG, MEASUREMENTS_TAG } from "@/utils/redirect";
 
 export const getUserMeals = unstable_cache(
   async (userId: Meal["userId"]) => {
@@ -109,4 +109,5 @@ export const deleteMeal = async (mealId: string) => {
     };
   }
   revalidateTag(MEALS_TAG);
+  revalidateTag(MEASUREMENTS_TAG);
 };

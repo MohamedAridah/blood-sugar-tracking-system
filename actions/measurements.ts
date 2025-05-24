@@ -9,8 +9,14 @@ import { MEASUREMENTS_TAG } from "@/utils/redirect";
 import delay from "@/utils/delay";
 
 type GetMeasurementsParams = MeasurementsSearchParamsType;
-type MeasurementWithBefore = Pick<Measurement, "beforeMeal">;
-type MeasurementWithAfter = Pick<Measurement, "afterMeal">;
+type BeforeMeal = NonNullable<Measurement["beforeMeal"]>;
+type AfterMeal = NonNullable<Measurement["beforeMeal"]>;
+type MeasurementWithBeforeWithoutCreatedAt = {
+  beforeMeal: Omit<BeforeMeal, "createdAt"> | null;
+};
+type MeasurementWithAfterWithoutCreatedAt = {
+  afterMeal: Omit<AfterMeal, "createdAt"> | null;
+};
 type Measurement_Picked = Pick<
   Measurement,
   "userId" | "mealId" | "mealType" | "date"
@@ -26,7 +32,7 @@ export const findMeasurementById = async (measurementId: string) => {
 };
 
 export const findMeasurement = async (
-  filters: Pick<Measurement, "userId" | "mealId" | "date">,
+  filters: Pick<Measurement, "userId" | "mealId" | "dateString">,
   selectedFields?: Partial<{ [K in keyof Measurement]: boolean }>,
   selectInsulin: boolean = false
 ) => {
@@ -125,17 +131,15 @@ export const deleteMeasurement = async (id: string) => {
 };
 
 export const addBeforeMealReading = async (
-  measurementData: Measurement_Picked & MeasurementWithBefore
+  measurementData: Measurement_Picked & MeasurementWithBeforeWithoutCreatedAt
 ) => {
   console.log("Creating New Before Measurement");
-  console.log("Input", measurementData);
-
   try {
     const isFound = await findMeasurement(
       {
         userId: measurementData.userId,
         mealId: measurementData.mealId,
-        date: measurementData.date,
+        dateString: measurementData.date.toISOString().split("T")[0],
       },
       { beforeMeal: true }
     );
@@ -151,17 +155,16 @@ export const addBeforeMealReading = async (
     }
 
     console.log("Creating New Before Measurement Because It's not Exists yet.");
-    const result = await prisma.measurement.create({
+    await prisma.measurement.create({
       data: {
         userId: measurementData.userId,
         mealId: measurementData.mealId,
         mealType: measurementData.mealType,
         beforeMeal: measurementData.beforeMeal,
         date: measurementData.date,
+        dateString: measurementData.date.toISOString().split("T")[0],
       },
     });
-    console.log("Output", result);
-    return result;
   } catch (error: unknown) {
     console.log("Error With createMeasurement__before: ", error);
     return {
@@ -174,7 +177,7 @@ export const addBeforeMealReading = async (
 
 export const updateBeforeMealReading = async (
   measurementId: string,
-  measurementData: Partial<MeasurementWithBefore>
+  measurementData: Partial<MeasurementWithBeforeWithoutCreatedAt>
 ) => {
   console.log("Incomming: ", measurementData);
 
@@ -199,15 +202,16 @@ export const updateBeforeMealReading = async (
 };
 
 export const addAfterMealReading = async (
-  measurementData: Measurement_Picked & MeasurementWithAfter
+  measurementData: Measurement_Picked & MeasurementWithAfterWithoutCreatedAt
 ) => {
   console.log("Creating New After Measurement");
   try {
+    const dateString = measurementData.date.toISOString().split("T")[0];
     const isFound = await findMeasurement(
       {
         userId: measurementData.userId,
         mealId: measurementData.mealId,
-        date: measurementData.date,
+        dateString,
       },
       { afterMeal: true }
     );
@@ -216,13 +220,13 @@ export const addAfterMealReading = async (
       console.log(`Measurement is not existed`);
       console.log("Tips: Redirects to add before measurement first");
       throw {
-        message: `No measurement exists for ${measurementData.date}. Tip add before measurement first`,
+        message: `No measurement exists for ${dateString}. Tip add before measurement first`,
         code: "MEASUREMENT_NOT_FOUND",
       };
     }
 
     if (isFound?.id && isFound.afterMeal?.value) {
-      console.log(`After Measurement for ${isFound.date} Already Exists`);
+      console.log(`After Measurement for ${dateString} Already Exists`);
       console.log("Tips: Redirects to edit page");
       throw {
         message: "After measurement already exists.",
@@ -251,7 +255,7 @@ export const addAfterMealReading = async (
 
 export const updateAfterMealReading = async (
   measurementId: string,
-  measurementData: Partial<MeasurementWithAfter>
+  measurementData: Partial<MeasurementWithAfterWithoutCreatedAt>
 ) => {
   console.log("Incomming: ", measurementData);
 

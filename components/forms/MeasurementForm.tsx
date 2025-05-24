@@ -28,10 +28,12 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
+import formatDate from "@/utils/formatDate";
 
 type Props = {
   data?: Partial<Measurement> & Partial<MeasurementFields>;
   formHandler: SubmitHandler<MeasurementFields>;
+  formType?: "new" | "edit";
 };
 
 export type MyFormHandle = {
@@ -39,12 +41,12 @@ export type MyFormHandle = {
 };
 
 const MeasurementForm = React.forwardRef<MyFormHandle, Props>(
-  ({ data, formHandler }, ref) => {
+  ({ data, formHandler, formType = "new" }, ref) => {
     const form = useForm<MeasurementFields>({
       defaultValues: {
         bloodSugarLevel: data?.bloodSugarLevel || undefined,
         notes: data?.notes || undefined,
-        createdAt: data?.createdAt || new Date(),
+        createdAt: data?.createdAt ? new Date(data?.createdAt) : new Date(),
       },
       resolver: zodResolver(MeasurementSchema),
     });
@@ -111,13 +113,18 @@ const MeasurementForm = React.forwardRef<MyFormHandle, Props>(
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
+                        disabled={formType === "edit"}
                         variant="outline"
                         className={clsx(
                           "text-left font-normal ",
                           !field.value && "text-muted-foreground"
                         )}
                       >
-                        {new Date(field.value as Date)?.toDateString()}
+                        {field.value ? (
+                          formatDate(field.value, "PPPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
@@ -170,7 +177,7 @@ const MeasurementForm = React.forwardRef<MyFormHandle, Props>(
                 <Spinner /> Adding...
               </>
             ) : (
-              " Add Measurement"
+              "Add Measurement"
             )}
           </Button>
         </form>
