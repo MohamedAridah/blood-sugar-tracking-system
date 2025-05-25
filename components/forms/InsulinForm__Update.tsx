@@ -18,7 +18,7 @@ const InsulinForm__Update = ({ measurementId, formData }: Props) => {
   const passedData: InsulinFields = {
     insulinDose: formData.insulinDose?.units as number,
     notes: formData.insulinDose?.notes as string,
-    createdAt: formData.insulinDose?.createdAt,
+    createdAt: formData.date,
   };
 
   const onSubmit: SubmitHandler<InsulinFields> = async (data) => {
@@ -46,7 +46,9 @@ const InsulinForm__Update = ({ measurementId, formData }: Props) => {
     }
   };
 
-  return <InsulinForm formHandler={onSubmit} data={passedData} />;
+  return (
+    <InsulinForm formHandler={onSubmit} data={passedData} formType="edit" />
+  );
 };
 
 export default InsulinForm__Update;

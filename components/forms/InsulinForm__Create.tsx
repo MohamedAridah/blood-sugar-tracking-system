@@ -19,12 +19,11 @@ const InsulinForm__Create = ({ formData }: Props) => {
     const result = await addInsulinReading({
       mealId: formData.mealId,
       userId: formData.userId,
-      date: new Date(data.createdAt!!).toISOString().split("T")[0],
+      date: data.createdAt as Date,
       units: data.insulinDose,
       //@ts-ignore
       notes: data.notes,
       type: "INTERMEDIATE",
-      createdAt: data.createdAt as Date,
     });
 
     if (result?.error) {

@@ -7,14 +7,15 @@ import { findMeasurement } from "@/actions/measurements";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { MEASUREMENTS_TAG } from "@/utils/redirect";
 
-
 export const addInsulinReading = async (measurementData: InsulinDose) => {
+  let measurementId;
   try {
+    const dateString = measurementData.date.toISOString().split("T")[0];
     const isFound = await findMeasurement(
       {
         userId: measurementData.userId,
         mealId: measurementData.mealId,
-        date: measurementData.date,
+        dateString,
       },
       { afterMeal: true },
       true
@@ -33,6 +34,7 @@ export const addInsulinReading = async (measurementData: InsulinDose) => {
       };
     }
 
+    measurementId = isFound.id;
     if (isFound.id && !isFound.afterMeal?.value) {
       console.log(
         `After meal measurement is missing. Tip complete before and after meal measurements then add insulin dose`
@@ -70,6 +72,7 @@ export const addInsulinReading = async (measurementData: InsulinDose) => {
             units: measurementData.units,
             type: measurementData.type,
             date: isFound.date,
+            dateString,
             notes: measurementData.notes,
           },
         },
@@ -84,6 +87,7 @@ export const addInsulinReading = async (measurementData: InsulinDose) => {
   }
 
   revalidateTag(MEASUREMENTS_TAG);
+  revalidateTag(`${MEASUREMENTS_TAG}-${measurementId}`);
 };
 
 export const updateInsulinReading = async (
@@ -93,6 +97,7 @@ export const updateInsulinReading = async (
   console.log("Incomming: ", measurementData);
 
   console.log("Updating Insulin dose Measurement");
+
   try {
     const isFound = await prisma.insulinDose.findUnique({
       where: { measurementId },
@@ -123,4 +128,5 @@ export const updateInsulinReading = async (
   }
 
   revalidateTag(MEASUREMENTS_TAG);
+  revalidateTag(`${MEASUREMENTS_TAG}-${measurementId}`);
 };

@@ -168,7 +168,7 @@ const Chart = <T extends Measurement>({ chartData }: ChartProps<T>) => {
             label={{
               position: "insideBottomRight",
               value: "Max",
-              fill: "#333",
+              className: "fill-current text-[#333] dark:text-white font-semibold",
             }}
           />
           <ReferenceLine
@@ -179,7 +179,7 @@ const Chart = <T extends Measurement>({ chartData }: ChartProps<T>) => {
             label={{
               position: "insideBottomRight",
               value: "Min",
-              fill: "#333",
+              className: "fill-current text-[#333] dark:text-white font-semibold",
             }}
           />
         </BarChart>

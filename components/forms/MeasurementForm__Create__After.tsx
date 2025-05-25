@@ -21,11 +21,10 @@ const MeasurementForm__Create__After = ({ formData }: Props) => {
       userId: formData.userId,
       mealId: formData.mealId,
       mealType: formData.mealType,
-      date: new Date(data.createdAt!!).toISOString().split("T")[0],
+      date: data.createdAt as Date,
       afterMeal: {
         note: data?.notes as string,
         value: data.bloodSugarLevel,
-        createdAt: data?.createdAt as Date,
       },
     });
 
