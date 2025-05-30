@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,20 +9,72 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  email        String        @unique
-  name         String?
-  meals        Meal[]
-  insulinDoses InsulinDose[]
-  measurements Measurement[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id            String        @id @map("_id")
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  meals         Meal[]
+  insulinDoses  InsulinDose[]
+  measurements  Measurement[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @map("_id")
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @map("_id")
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }
 
 model Meal {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String        @db.ObjectId
+  userId       String
   name         String        @unique
   description  String?
   measurements Measurement[]
@@ -35,7 +88,7 @@ model Meal {
 model Measurement {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @db.ObjectId
+  userId String
 
   meal   Meal?   @relation(fields: [mealId], references: [id], onDelete: Cascade)
   mealId String? @db.ObjectId
@@ -52,13 +105,14 @@ model Measurement {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, mealId, mealType, dateString]) // This enforces 1 per user/meal/date
+  // This enforces 1 per user/meal/date
+  @@unique([userId, mealId, mealType, dateString])
 }
 
 model InsulinDose {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @db.ObjectId
+  userId String
 
   measurement   Measurement? @relation(fields: [measurementId], references: [id], onDelete: Cascade)
   measurementId String?      @unique @db.ObjectId // Enforce 1:1

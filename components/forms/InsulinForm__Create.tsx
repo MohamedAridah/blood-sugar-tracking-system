@@ -18,7 +18,6 @@ const InsulinForm__Create = ({ formData }: Props) => {
   const onSubmit: SubmitHandler<InsulinFields> = async (data) => {
     const result = await addInsulinReading({
       mealId: formData.mealId,
-      userId: formData.userId,
       date: data.createdAt as Date,
       units: data.insulinDose,
       //@ts-ignore

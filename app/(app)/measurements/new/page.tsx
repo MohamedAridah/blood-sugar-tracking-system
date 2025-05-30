@@ -1,20 +1,23 @@
 import Link from "next/link";
 import { getUserMeals } from "@/actions/meals";
 import BackButton from "@/components/BackButton";
+import { getUserSession } from "@/actions/auth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MeasurementForm__Create__Before from "@/components/forms/MeasurementForm__Create__Before";
 import MeasurementForm__Create__After from "@/components/forms/MeasurementForm__Create__After";
 import MealTimeTriggersList from "@/components/util-components/MealTimeTriggersList";
 import InsulinForm__Create from "@/components/forms/InsulinForm__Create";
 import NotificationMessage from "@/components/NotificationMessage";
-import { FileArchiveIcon, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MealsDropdown from "./meals-dropdown";
+import { FileArchiveIcon, Plus } from "lucide-react";
 
 const meals_list_limit: number = 3;
 
 const AddMeasurement = async () => {
-  const meals = await getUserMeals("680fd0ec954a447f2cef1b0c");
+  const { user } = await getUserSession();
+  const meals = await getUserMeals(user?.id as string);
+  
   const showMoreMeals = meals.length > meals_list_limit;
 
   if (meals.length === 0) {

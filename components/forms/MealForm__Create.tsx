@@ -1,24 +1,18 @@
 "use client";
 
-import { Meal } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { createMeal } from "@/actions/meals";
 import { SubmitHandler } from "react-hook-form";
-import { REDIRECT_AFTER_NEW_MEAL } from "@/utils/redirect";
+import { createMeal } from "@/actions/meals";
 import { MealSchemaType } from "@/schemas/meal_zod";
+import { REDIRECT_AFTER_NEW_MEAL } from "@/utils/redirect";
 import MealForm from "./MealForm";
 import { toast } from "sonner";
 
-type Props = {
-  formData: Pick<Meal, "userId">;
-};
-
-const MealForm__Create = ({ formData }: Props) => {
+const MealForm__Create = () => {
   const { push } = useRouter();
 
   const onSubmit: SubmitHandler<MealSchemaType> = async (data) => {
     const result = await createMeal({
-      userId: formData.userId,
       name: data.name,
       description: data.description,
     });
@@ -33,7 +27,7 @@ const MealForm__Create = ({ formData }: Props) => {
     }
   };
 
-  return <MealForm formHandler={onSubmit} formData={{ ...formData }} />;
+  return <MealForm formHandler={onSubmit} />;
 };
 
 export default MealForm__Create;

@@ -1,12 +1,15 @@
 import Header from "@/components/Header";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 type AuthLayoutProps = Readonly<{ children: React.ReactNode }>;
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen my-10">
-      <Header />
-      {children}
-    </div>
+    <SidebarProvider>
+      <Header showSidebar={false} />
+      <div className="flex flex-col justify-center items-center my-14">
+        {children}
+      </div>
+    </SidebarProvider>
   );
 }

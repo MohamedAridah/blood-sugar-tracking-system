@@ -18,7 +18,6 @@ const MeasurementForm__Create__After = ({ formData }: Props) => {
 
   const onSubmit: SubmitHandler<MeasurementFields> = async (data) => {
     const result = await addAfterMealReading({
-      userId: formData.userId,
       mealId: formData.mealId,
       mealType: formData.mealType,
       date: data.createdAt as Date,

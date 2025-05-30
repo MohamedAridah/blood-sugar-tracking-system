@@ -20,7 +20,10 @@ export const formSchema = z.object({
 
 export const signUpFormSchema = formSchema
   .extend({
-    confirm: z.string(),
+    confirm: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" })
+      .max(50, { message: "Password cannot exceed 50 characters" }),
   })
   .refine((data) => data.password === data.confirm, {
     message: "Passwords don't match. check for typo!",
@@ -34,4 +37,23 @@ export const signInFormSchema = formSchema
   })
   .extend({
     rememberMe: z.boolean().default(false).optional(),
+  });
+
+export const forgotPasswordFormSchema = formSchema.pick({
+  email: true,
+});
+
+export const resetPasswordFormSchema = formSchema
+  .pick({
+    password: true,
+  })
+  .extend({
+    confirm: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters long" })
+      .max(50, { message: "Password cannot exceed 50 characters" }),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "Passwords don't match. check for typo!",
+    path: ["confirm"],
   });

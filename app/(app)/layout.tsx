@@ -8,7 +8,7 @@ export default function MainLayout({ children }: Props) {
   return (
     <>
       <SidebarProvider>
-        <Header />
+        <Header showSidebar />
         <div className="flex">
           <AppSidebar />
           <main className="p-4 md:p-5 flex-1 w-full h-full">{children}</main>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { MoveLeft } from "lucide-react";
-import { Button, ButtonVariants } from "@/components/ui/button";
+import { Button, buttonVariants, ButtonVariants } from "@/components/ui/button";
 
 type BackButtonProps = React.ComponentProps<"a"> & {
   link?: string;

@@ -14,11 +14,14 @@ import {
 } from "lucide-react";
 import {
   Sidebar,
+  SidebarContent,
+  SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import User from "./User";
 
 const items = [
   {
@@ -51,19 +54,24 @@ const items = [
 
 export default function AppSidebar() {
   return (
-    <Sidebar>
-      <SidebarMenu>
-        {items.map((item) => (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
-              <Link href={item.url}>
-                <item.icon />
-                <span>{item.title}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
-      </SidebarMenu>
+    <Sidebar className="h-[calc(100vh-45px)]">
+      <SidebarContent>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
+                <Link href={item.url}>
+                  <item.icon />
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarContent>
+      <SidebarFooter className="gap-0 p-0">
+        <User showUserInfo dropdownSide="right" />
+      </SidebarFooter>
     </Sidebar>
   );
 }

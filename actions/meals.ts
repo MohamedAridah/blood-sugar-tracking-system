@@ -5,18 +5,14 @@ import { Meal } from "@prisma/client";
 import { revalidateTag, unstable_cache } from "next/cache";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { MEALS_TAG, MEASUREMENTS_TAG } from "@/utils/redirect";
+import { getUserSession } from "./auth";
 
 export const getUserMeals = unstable_cache(
-  async (userId: Meal["userId"]) => {
+  async (userId: string) => {
     return await prisma.meal.findMany({
       where: {
         userId,
       },
-      // select: {
-      //   id: true,
-      //   name: true,
-      //   userId: true,
-      // },
     });
   },
   [MEALS_TAG],
@@ -25,39 +21,35 @@ export const getUserMeals = unstable_cache(
   }
 );
 
-export const getMealCached = async (mealId: string) => {
-  return unstable_cache(
-    async () => {
-      console.log(`Fetching meal details for ID: ${mealId}`);
+export const getUserMeal = unstable_cache(
+  async (mealId: string) => {
+    console.log(`Fetching meal details for ID: ${mealId}`);
+    try {
+      const meal = await prisma.meal.findUnique({
+        where: { id: mealId },
+      });
 
-      try {
-        const meal = await prisma.meal.findUnique({
-          where: { id: mealId },
-        });
-
-        if (!meal) {
-          const message = `Meal with ID ${mealId} not found`;
-          console.warn(message);
-          throw new Error(message);
-        }
-
-        console.log("Meal retrieved successfully:", meal);
-        return meal;
-      } catch (error) {
-        const errorMessage = getErrorMessage(error);
-        console.error("Error in getMeal:", errorMessage);
-        return { error: errorMessage };
+      if (!meal) {
+        const message = `Meal with ID ${mealId} not found`;
+        console.warn(message);
+        throw new Error(message);
       }
-    },
-    [`${MEALS_TAG}-${mealId}`],
-    {
-      tags: [`${MEALS_TAG}-${mealId}`],
+
+      console.log("Meal retrieved successfully:", meal);
+      return meal;
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      console.error("Error in getMeal:", errorMessage);
+      return { error: errorMessage };
     }
-  )();
-};
+  },
+  [MEALS_TAG],
+  {
+    tags: [MEALS_TAG],
+  }
+);
 
 type CreateMealParams = {
-  userId: string;
   name: string;
   description?: string;
 };
@@ -65,8 +57,13 @@ type CreateMealParams = {
 export const createMeal = async (mealData: CreateMealParams) => {
   console.log("Creating New meal");
   try {
+    const { user } = await getUserSession();
+    const userId = user?.id;
+
+    if (!userId) throw new Error("Not authenticated");
+
     await prisma.meal.create({
-      data: { ...mealData },
+      data: { userId, ...mealData },
     });
   } catch (error: unknown) {
     return {

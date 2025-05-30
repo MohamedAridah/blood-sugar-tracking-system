@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -26,8 +27,11 @@ import { Button } from "@/components/ui/button";
 import { signInFormSchema } from "@/schemas/auth-schema";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { authClient } from "@/lib/auth-client";
+import Spinner from "@/components/Spinner";
 
 export default function SignIn() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
@@ -38,7 +42,39 @@ export default function SignIn() {
   });
 
   async function onSubmit(values: z.infer<typeof signInFormSchema>) {
-    console.log(values);
+    const { data, error } = await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+        rememberMe: values.rememberMe,
+        callbackURL: "/",
+      },
+      {
+        onRequest: () => {
+          toast.loading("Please wait...");
+        },
+        onResponse: () => {
+          toast.dismiss();
+        },
+        onSuccess: () => {
+          toast.success("Signed In successfully");
+        },
+        onError: (ctx) => {
+          form.setError("email", {
+            type: "custom",
+            message: ctx.error.message,
+          });
+          form.setError("password", {
+            type: "custom",
+            message: ctx.error.message,
+          });
+          toast.error(
+            ctx.error.status === 500 ? ctx.error.statusText : ctx.error.message
+          );
+        },
+      }
+    );
+    console.log({ data, error });
   }
 
   return (
@@ -71,7 +107,15 @@ export default function SignIn() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Password</FormLabel>
+                    <Link
+                      href="/forgot-password"
+                      className="text-xs hover:underline"
+                    >
+                      Forgot your password?
+                    </Link>
+                  </div>
                   <FormControl>
                     <Input
                       type="password"
@@ -101,8 +145,12 @@ export default function SignIn() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
-              Submit
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? <Spinner text="" /> : "Sign in"}
             </Button>
           </form>
         </Form>

@@ -6,14 +6,20 @@ import { InsulinDose } from "@prisma/client";
 import { findMeasurement } from "@/actions/measurements";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { MEASUREMENTS_TAG } from "@/utils/redirect";
+import { getUserSession } from "./auth";
 
 export const addInsulinReading = async (measurementData: InsulinDose) => {
   let measurementId;
   try {
+    const { user } = await getUserSession();
+    const userId = user?.id;
+
+    if (!userId) throw new Error("Not authenticated");
+
     const dateString = measurementData.date.toISOString().split("T")[0];
     const isFound = await findMeasurement(
       {
-        userId: measurementData.userId,
+        userId,
         mealId: measurementData.mealId,
         dateString,
       },
@@ -67,7 +73,7 @@ export const addInsulinReading = async (measurementData: InsulinDose) => {
       data: {
         insulinDose: {
           create: {
-            userId: measurementData.userId,
+            userId,
             mealId: measurementData.mealId,
             units: measurementData.units,
             type: measurementData.type,

@@ -1,4 +1,4 @@
-import { getMealCached } from "@/actions/meals";
+import { getUserMeal } from "@/actions/meals";
 import BackButton from "@/components/BackButton";
 import MealForm__Update from "@/components/forms/MealForm__Update";
 import NotificationMessage from "@/components/NotificationMessage";
@@ -10,7 +10,7 @@ type Props = {
 
 const EditMeal = async ({ params }: Props) => {
   const mealId = (await params).id;
-  const mealData = await getMealCached(mealId);
+  const mealData = await getUserMeal(mealId);
 
   if ("error" in mealData) {
     return (

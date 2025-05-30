@@ -7,6 +7,7 @@ import { MeasurementsSearchParamsType } from "@/app/searchParams";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { MEASUREMENTS_TAG } from "@/utils/redirect";
 import delay from "@/utils/delay";
+import { getUserSession } from "./auth";
 
 type GetMeasurementsParams = MeasurementsSearchParamsType;
 type BeforeMeal = NonNullable<Measurement["beforeMeal"]>;
@@ -17,10 +18,7 @@ type MeasurementWithBeforeWithoutCreatedAt = {
 type MeasurementWithAfterWithoutCreatedAt = {
   afterMeal: Omit<AfterMeal, "createdAt"> | null;
 };
-type Measurement_Picked = Pick<
-  Measurement,
-  "userId" | "mealId" | "mealType" | "date"
->;
+type Measurement_Picked = Pick<Measurement, "mealId" | "mealType" | "date">;
 
 export const findMeasurementById = async (measurementId: string) => {
   const isFound = await prisma.measurement.findUnique({
@@ -48,12 +46,14 @@ export const findMeasurement = async (
 };
 
 export const getMeasurements = unstable_cache(
-  async (params: GetMeasurementsParams) => {
+  async (userId: string, params: GetMeasurementsParams) => {
     console.log("Getting measurements");
     console.log("Params: ", params);
 
-    delay();
     const measurements = await prisma.measurement.findMany({
+      where: {
+        userId,
+      },
       take: params.limit,
       include: {
         insulinDose: {
@@ -135,9 +135,13 @@ export const addBeforeMealReading = async (
 ) => {
   console.log("Creating New Before Measurement");
   try {
+    const { user } = await getUserSession();
+    const userId = user?.id;
+    if (!userId) throw new Error("Not authenticated");
+
     const isFound = await findMeasurement(
       {
-        userId: measurementData.userId,
+        userId,
         mealId: measurementData.mealId,
         dateString: measurementData.date.toISOString().split("T")[0],
       },
@@ -155,9 +159,10 @@ export const addBeforeMealReading = async (
     }
 
     console.log("Creating New Before Measurement Because It's not Exists yet.");
+
     await prisma.measurement.create({
       data: {
-        userId: measurementData.userId,
+        userId,
         mealId: measurementData.mealId,
         mealType: measurementData.mealType,
         beforeMeal: measurementData.beforeMeal,
@@ -206,10 +211,14 @@ export const addAfterMealReading = async (
 ) => {
   console.log("Creating New After Measurement");
   try {
+    const { user } = await getUserSession();
+    const userId = user?.id;
+    if (!userId) throw new Error("Not authenticated");
+
     const dateString = measurementData.date.toISOString().split("T")[0];
     const isFound = await findMeasurement(
       {
-        userId: measurementData.userId,
+        userId,
         mealId: measurementData.mealId,
         dateString,
       },

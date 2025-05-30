@@ -2,10 +2,12 @@
 
 import { z } from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpFormSchema } from "@/schemas/auth-schema";
-
+import { sendWelcomeEmail } from "@/utils/sendWelcomeEmail";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,6 +30,7 @@ import Spinner from "@/components/Spinner";
 import { toast } from "sonner";
 
 export default function SignUp() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof signUpFormSchema>>({
     defaultValues: {
       username: "",
@@ -39,7 +42,36 @@ export default function SignUp() {
   });
 
   const onSubmit = async (values: z.infer<typeof signUpFormSchema>) => {
-    console.log(values);
+    const { data, error } = await authClient.signUp.email(
+      {
+        email: values.email,
+        name: values.username,
+        password: values.password,
+      },
+      {
+        onRequest: () => {
+          toast.loading("Please wait...");
+        },
+        onResponse: () => {
+          toast.dismiss();
+        },
+        onSuccess: async (ctx) => {
+          toast.success("account created successfully");
+          router.replace("/sign-in");
+          await sendWelcomeEmail({
+            email: ctx.data.user.email,
+            username: ctx.data.user.name,
+          });
+          form.reset();
+        },
+        onError: (ctx) => {
+          toast.error(
+            ctx.error.status === 500 ? ctx.error.statusText : ctx.error.message
+          );
+        },
+      }
+    );
+    console.log({ data, error });
   };
 
   return (
@@ -116,8 +148,12 @@ export default function SignUp() {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
-              Submit
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? <Spinner text="" /> : "Sign up"}
             </Button>
           </form>
         </Form>

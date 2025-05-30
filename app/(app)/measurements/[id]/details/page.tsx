@@ -5,6 +5,8 @@ import MeasurementDetails from "@/components/MeasurementDetails";
 import Spinner from "@/components/Spinner";
 import BackButton from "@/components/BackButton";
 import formatDate from "@/utils/formatDate";
+import { getUserSession } from "@/actions/auth";
+import { authClient } from "@/lib/auth-client";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -32,7 +34,11 @@ const MeasurementDetailsPage = async ({ params }: Props) => {
 };
 
 export const generateStaticParams = async () => {
-  const { measurements } = await getMeasurements({});
+  const session = await authClient.getSession();
+  const { measurements } = await getMeasurements(
+    session.data?.user.id as string,
+    {}
+  );
   return measurements.map((measurement) => ({
     id: measurement.id,
   }));

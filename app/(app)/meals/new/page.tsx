@@ -7,7 +7,7 @@ const Meal = async () => {
       <BackButton />
       <h2 className="font-semibold mb-2 text-xl">Create New Meal</h2>
       <section className="max-w-[700px]">
-        <MealForm__Create formData={{ userId: "680fd0ec954a447f2cef1b0c" }} />
+        <MealForm__Create />
       </section>
     </>
   );

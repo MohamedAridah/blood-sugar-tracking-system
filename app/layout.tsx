@@ -10,6 +10,15 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Blood Sugar Level Tracker | BSLT",
   description: "BSLT is a website to enter and view your blood sugar levels.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/site.webmanifest",
 };
 
 type RootLayoutProps = Readonly<{ children: React.ReactNode }>;
@@ -27,7 +36,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             disableTransitionOnChange
           >
             {children}
-            <Toaster theme="system"  />
+            <Toaster theme="system" />
           </ThemeProvider>
         </NuqsAdapter>
       </body>

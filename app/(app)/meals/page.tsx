@@ -1,41 +1,36 @@
+import Link from "next/link";
 import { getUserMeals } from "@/actions/meals";
+import { getUserSession } from "@/actions/auth";
 import MealCard from "./_components/meal-card";
 import NotificationMessage from "@/components/NotificationMessage";
-import { ArrowRight, FilesIcon, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { PATH_NEW_MEAL } from "@/utils/redirect";
 import BackButton from "@/components/BackButton";
+import { ArrowRight, FilesIcon, Plus } from "lucide-react";
 
 const Meals = async () => {
-  const meals = await getUserMeals("680fd0ec954a447f2cef1b0c");
+  const { user } = await getUserSession();
+  const meals = await getUserMeals(user?.id as string);
 
   return (
     <section>
-      <BackButton />
+      <div className="flex justify-between items-center">
+        <BackButton />
+        <Button size="sm" className="group">
+          <Link href="/meals/new" className="flex items-center">
+            <Plus className="mr-2" />
+            Add Meal
+            <ArrowRight className="invisible -translate-x-full group-hover:visible group-hover:translate-x-1  transition-all" />
+          </Link>
+        </Button>
+      </div>
       <h1 className="font-semibold text-lg mb-2">My Meals</h1>
 
       {meals.length ? (
         <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-2 mt-5">
-          {meals.map((meal) => (
+          {meals.map((meal: any) => (
             <MealCard key={meal.id} meal={meal} />
           ))}
-          <Card className="grid place-items-center">
-            <Button
-              variant="ghost"
-              className="border p-4 size-15 rounded-full"
-              asChild
-            >
-              <Link
-                href={PATH_NEW_MEAL}
-                className="text-xl inline-block"
-                aria-label="Go to add new meal page"
-              >
-                <Plus />
-              </Link>
-            </Button>
-          </Card>
         </div>
       ) : (
         <NotificationMessage
