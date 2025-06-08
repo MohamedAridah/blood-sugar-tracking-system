@@ -29,7 +29,7 @@ const ResetPasswordEmail = ({
         <Container style={styles.container}>
           <Section style={styles.header}>
             <Img
-              src="https://i.ibb.co/7tDkmcLK/final.png"
+              src="https://bsts.vercel.app/logo.png"
               alt="BSTS Logo"
               width="55px"
               height="55px"
