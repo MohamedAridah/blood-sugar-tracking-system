@@ -10,7 +10,7 @@ export const POST = async (req: NextRequest) => {
     subject: "Welcome to BSTS!",
     html: Welcome({
       username,
-    }),
+    }) as any,
   });
 
   return NextResponse.json({});

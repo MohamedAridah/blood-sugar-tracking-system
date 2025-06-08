@@ -15,11 +15,12 @@ const sendEmail = async ({ to, subject, html }: MailOptions) => {
   return new Promise(async (resolve, reject) => {
     try {
       const transporter = nodemailer.createTransport(transporterOptions);
+      const renderedHtml = await render(html as string);
       const mailOptions = {
         from: process.env.SMTP_USER,
         to,
         subject,
-        html: await pretty(await render(html)),
+        html: renderedHtml,
       };
 
       await transporter.sendMail(mailOptions);
