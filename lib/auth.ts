@@ -19,7 +19,7 @@ export const auth = betterAuth({
         html: ResetPasswordEmail({
           userName: user.name,
           resetLink: url,
-        }),
+        }) as any,
       });
     },
     revokeSessionsOnPasswordReset: true,
