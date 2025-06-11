@@ -33,10 +33,11 @@ export default function SignUp() {
   const router = useRouter();
   const form = useForm<z.infer<typeof signUpFormSchema>>({
     defaultValues: {
-      username: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
-      confirm: "",
+      confirmPassword: "",
     },
     resolver: zodResolver(signUpFormSchema),
   });
@@ -45,7 +46,9 @@ export default function SignUp() {
     const { data, error } = await authClient.signUp.email(
       {
         email: values.email,
-        name: values.username,
+        name: values.name,
+        firstName: values.firstName,
+        lastName: values.lastName,
         password: values.password,
       },
       {
@@ -84,19 +87,34 @@ export default function SignUp() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-1 items-start">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="email"
@@ -133,7 +151,7 @@ export default function SignUp() {
             />
             <FormField
               control={form.control}
-              name="confirm"
+              name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>

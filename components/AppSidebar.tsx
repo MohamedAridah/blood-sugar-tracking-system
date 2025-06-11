@@ -11,6 +11,7 @@ import {
   Plus,
   Search,
   Settings,
+  User2,
 } from "lucide-react";
 import {
   Sidebar,
@@ -21,7 +22,7 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import User from "./User";
+import User from "@/components/User";
 
 const items = [
   {
@@ -50,16 +51,21 @@ const items = [
     url: "/meals/new",
     icon: ForkKnifeCrossedIcon,
   },
+  {
+    title: "Profile",
+    url: "/account",
+    icon: User2,
+  },
 ];
 
 export default function AppSidebar() {
   return (
-    <Sidebar className="h-[calc(100vh-45px)]">
+    <Sidebar className="h-[calc(100vh-45px)]" collapsible="icon">
       <SidebarContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton tooltip={item.title} closeAfter asChild>
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
@@ -70,7 +76,7 @@ export default function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="gap-0 p-0">
-        <User showUserInfo dropdownSide="right" />
+        <User showUserInfo />
       </SidebarFooter>
     </Sidebar>
   );

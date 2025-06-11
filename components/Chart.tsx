@@ -201,7 +201,7 @@ const ValueRangeLegend = () => {
   ];
 
   return (
-    <div className="flex justify-center gap-4 mb-4 text-sm">
+    <div className="flex justify-center gap-4 mb-4 text-xs sm:text-sm">
       {ranges.map((range, index) => (
         <div key={index} className="flex items-center gap-1">
           <span

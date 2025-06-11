@@ -27,7 +27,7 @@ const Meals = async () => {
       <h1 className="font-semibold text-lg mb-2">My Meals</h1>
 
       {meals.length ? (
-        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-2 mt-5">
+        <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start gap-2 mt-5">
           {meals.map((meal: any) => (
             <MealCard key={meal.id} meal={meal} />
           ))}

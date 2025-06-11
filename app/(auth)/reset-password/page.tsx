@@ -36,7 +36,7 @@ const ResetPassword = () => {
     resolver: zodResolver(resetPasswordFormSchema),
     defaultValues: {
       password: "",
-      confirm: "",
+      confirmPassword: "",
     },
   });
 
@@ -101,7 +101,7 @@ const ResetPassword = () => {
             />
             <FormField
               control={form.control}
-              name="confirm"
+              name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>

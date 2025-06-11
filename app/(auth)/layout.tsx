@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
@@ -7,9 +8,10 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <SidebarProvider>
       <Header showSidebar={false} />
-      <div className="flex flex-col justify-center items-center my-14">
+      <div className="flex justify-center items-center my-[15vh] px-4">
         {children}
       </div>
+      <Footer />
     </SidebarProvider>
   );
 }

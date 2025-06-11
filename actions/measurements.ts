@@ -6,7 +6,6 @@ import type { Measurement, Prisma } from "@prisma/client";
 import { MeasurementsSearchParamsType } from "@/app/searchParams";
 import { getErrorMessage } from "@/utils/getErrorMessage";
 import { MEASUREMENTS_TAG } from "@/utils/redirect";
-import delay from "@/utils/delay";
 import { getUserSession } from "./auth";
 
 type GetMeasurementsParams = MeasurementsSearchParamsType;
@@ -119,7 +118,6 @@ export const getMeasurement = async (measurementId: string) => {
 export const deleteMeasurement = async (id: string) => {
   console.log("Deleting measurement with id of #", id);
   try {
-    delay();
     console.log("Deleting measurement");
     await prisma.measurement.delete({ where: { id } });
   } catch (error) {

@@ -24,5 +24,20 @@ export const auth = betterAuth({
     },
     revokeSessionsOnPasswordReset: true,
   },
+  user: {
+    additionalFields: {
+      firstName: {
+        type: "string",
+        required: true,
+      },
+      lastName: {
+        type: "string",
+        required: true,
+      },
+    },
+    deleteUser: {
+      enabled: true,
+    },
+  },
   plugins: [nextCookies()],
 });

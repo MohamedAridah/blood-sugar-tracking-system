@@ -9,7 +9,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 type ResponsiveDialogProps = {
@@ -18,7 +17,8 @@ type ResponsiveDialogProps = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   description?: string;
-  actionButton: React.ReactNode;
+  actionButton?: React.ReactNode;
+  showFooter?: boolean;
 };
 
 export function ResponsiveDialog({
@@ -28,21 +28,24 @@ export function ResponsiveDialog({
   title,
   description,
   actionButton,
+  showFooter = true,
 }: ResponsiveDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent className="sm:max-w-[425px]">
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          {description && (
+          {description ? (
             <AlertDialogDescription>{description}</AlertDialogDescription>
-          )}
+          ) : null}
         </AlertDialogHeader>
         {children}
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild>{actionButton}</AlertDialogAction>
-        </AlertDialogFooter>
+        {showFooter ? (
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction asChild>{actionButton}</AlertDialogAction>
+          </AlertDialogFooter>
+        ) : null}
       </AlertDialogContent>
     </AlertDialog>
   );

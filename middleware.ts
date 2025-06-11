@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
+
   if (!sessionCookie) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
@@ -11,5 +12,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/(meals|measurements)(/.*)?"],
+  matcher: ["/", "/(meals|measurements)(/.*)?", "/account/:path*"],
 };

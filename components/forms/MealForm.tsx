@@ -89,7 +89,7 @@ const MealForm = React.forwardRef<MyFormHandle, Props>(
           <Button
             type="submit"
             className="w-full rounded-md"
-            disabled={form.formState.isSubmitting ? true : false}
+            disabled={form.formState.isSubmitting}
           >
             {form.formState.isSubmitting ? (
               <>

@@ -17,9 +17,13 @@ const MealForm__Create = () => {
       description: data.description,
     });
 
-    console.log(result);
-
     if (result?.error) {
+      if (result.error.code === "P2002") {
+        toast.error("Meal Exists!", {
+          description: "There is already meal with the same name.",
+        });
+        return;
+      }
       toast.error(result.error.message || "Failed to add meal");
     } else {
       push(REDIRECT_AFTER_NEW_MEAL);

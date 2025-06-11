@@ -2,7 +2,6 @@
 
 import { redirect } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { useSession } from "@/hooks/use-session";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -13,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { BadgeCheck, Bell, ChevronUp, LogOut } from "lucide-react";
+import { toast } from "sonner";
+import Link from "next/link";
 
 type Props = {
   showUserInfo?: boolean;
@@ -24,12 +25,12 @@ const User = ({ showUserInfo, dropdownSide }: Props) => {
   let triggerContent;
 
   if (!session.data) {
-    return;
+    return null;
   }
 
   if (showUserInfo) {
     triggerContent = (
-      <SidebarMenuButton>
+      <SidebarMenuButton className="group-data-[collapsible=icon]:!pl-0">
         <Avatar className="rounded-lg">
           <AvatarImage
             src="https://github.com/evilrabbit.png"
@@ -69,17 +70,32 @@ const User = ({ showUserInfo, dropdownSide }: Props) => {
         side={dropdownSide}
         className="w-[--radix-popper-anchor-width]"
       >
-        <DropdownMenuItem>
-          <BadgeCheck className="text-muted-foreground" /> Account
+        <DropdownMenuItem className="hover:cursor-pointer" asChild>
+          <Link href="/account">
+            <BadgeCheck className="text-muted-foreground" /> Account
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Bell className="text-muted-foreground" /> Notifications
+        <DropdownMenuItem className="hover:cursor-pointer" asChild>
+          <Link href="/notifications">
+            <Bell className="text-muted-foreground" /> Notifications
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="hover:cursor-pointer"
-          onClick={() => {
-            authClient.signOut();
+          onClick={async () => {
+            await authClient.signOut({
+              fetchOptions: {
+                onSuccess: () => {
+                  toast.success("Signed out Successfully");
+                },
+                onError: (ctx) => {
+                  toast.success(
+                    ctx.error.message || "Sorry something went wrong."
+                  );
+                },
+              },
+            });
             redirect("/sign-in");
           }}
         >
