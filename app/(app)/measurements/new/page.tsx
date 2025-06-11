@@ -17,7 +17,7 @@ const meals_list_limit: number = 3;
 const AddMeasurement = async () => {
   const { user } = await getUserSession();
   const meals = await getUserMeals(user?.id as string);
-  
+
   const showMoreMeals = meals.length > meals_list_limit;
 
   if (meals.length === 0) {
@@ -26,9 +26,10 @@ const AddMeasurement = async () => {
         <BackButton />
         <NotificationMessage
           title="You have no meals yet"
-          description="Add your meals whcich measurements will be related to"
+          description="Add your meals that measurements will be related to later"
           variant="gray"
           icon={FileArchiveIcon}
+          theme="no-border"
         >
           <Button variant="outline" className="mt-2" asChild>
             <Link href="/meals/new">Add Meal</Link>

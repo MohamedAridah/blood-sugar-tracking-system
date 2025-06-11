@@ -4,7 +4,7 @@ import { getMeasurements } from "@/actions/measurements";
 import BackButton from "@/components/BackButton";
 import MeasurementsChart from "@/components/MeasurementsChart";
 import Spinner from "@/components/Spinner";
-import MeasurementTable from "./_components/data.table";
+import MeasurementTable from "./_components/data-table";
 import { columns } from "./_components/columns";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -17,7 +17,7 @@ const MeasurementsPage = async () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-5 md:mb-6">
         <BackButton link="/" className="mb-0" />
         <Button size="sm" asChild>
           <Link href="/measurements/new">

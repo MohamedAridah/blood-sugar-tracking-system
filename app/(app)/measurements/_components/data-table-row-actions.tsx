@@ -65,9 +65,12 @@ export function DataTableRowActions<TData extends WithId<string>>({
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button
+            variant="ghost"
+            className="rotate-90 p-0 sm:h-8 sm:w-8 sm:rotate-0"
+          >
             <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
+            <MoreHorizontal className="h-4 w-4 " />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

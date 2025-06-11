@@ -3,10 +3,9 @@
 import { InsulinDose, Measurement } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import DataTableRowActions from "./data-table-row-actions";
-import { ArrowUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import formatDate from "@/utils/formatDate";
+import ResponsiveHeading from "./responsive-heading";
 
 export type MeasurementColumns = Pick<Measurement, "date" | "mealType"> & {
   before: number;
@@ -41,7 +40,7 @@ export const columns: ColumnDef<Measurement>[] = [
   },
   {
     accessorKey: "insulinDose",
-    header: "Insulin Dose",
+    header: () => <ResponsiveHeading full="Insulin Dose" short="Insulin" />,
     cell: ({ row }) => {
       const value: InsulinDose = row.getValue("insulinDose");
       return value == null ? "-" : value.units;
@@ -54,7 +53,12 @@ export const columns: ColumnDef<Measurement>[] = [
     ),
     cell: ({ row }) => {
       const date: Date = row.getValue("date");
-      return formatDate(date, "yyyy-MM-dd");
+      return (
+        <ResponsiveHeading
+          full={formatDate(date, "yyyy-MM-dd")}
+          short={formatDate(date, "dd-MM")}
+        />
+      );
     },
   },
   {
