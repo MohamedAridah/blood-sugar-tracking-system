@@ -31,7 +31,6 @@ import { authClient } from "@/lib/auth-client";
 import Spinner from "@/components/Spinner";
 
 export default function SignIn() {
-  const router = useRouter();
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {

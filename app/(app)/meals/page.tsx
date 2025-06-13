@@ -39,6 +39,7 @@ const Meals = async () => {
           icon={FilesIcon}
           variant="gray"
           theme="no-border"
+          className="10vh"
         >
           <Button size="sm" className="my-4" asChild>
             <Link href="/meals/new">

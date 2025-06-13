@@ -42,9 +42,10 @@ export default function ChangeAccountPassword() {
       newPassword: data.newPassword,
       revokeOtherSessions: true,
       fetchOptions: {
-        onSuccess: (ctx) => {
+        onSuccess: async (ctx) => {
           toast.success("Password changed");
           router.push("/sign-in");
+        await authClient.signOut();
           setIsModelOpen(false);
         },
         onError: (ctx) => {
