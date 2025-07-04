@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Meal } from "@prisma/client";
 import { deleteMeal } from "@/actions/meals";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { ResponsiveDialog } from "@/components/responsive-dialog";
 import IconMenu from "@/app/(app)/measurements/_components/menu-item";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
+import Spinner from "@/components/Spinner";
 
 type Props = {
   meal: Meal;
@@ -15,6 +16,7 @@ type Props = {
 
 export function MealDeleteAction({ meal }: Props) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   return (
     <>
@@ -26,13 +28,15 @@ export function MealDeleteAction({ meal }: Props) {
         actionButton={
           <Button
             className="text-red-500 bg-red-200"
-            onClick={async () => {
-              const result = await deleteMeal(meal.id);
-              if (result?.error) {
-                toast.error(result.error.message || "Failed to delete meal");
-              } else {
-                toast.success("Meal deleted.");
-              }
+            onClick={() => {
+              startTransition(async () => {
+                const result = await deleteMeal(meal.id);
+                if (result?.error) {
+                  toast.error(result.error.message || "Failed to delete meal");
+                } else {
+                  toast.success("Meal deleted.");
+                }
+              });
             }}
           >
             <IconMenu icon={<Trash2 className="h-4 w-4" />} text="Delete" />
@@ -49,9 +53,11 @@ export function MealDeleteAction({ meal }: Props) {
           setIsDeleteOpen(true);
         }}
       >
-        <IconMenu
-          icon={<Trash2 className="h-4 w-4 group-hover:text-red-500" />}
-        />
+        {isPending ? (
+          <Spinner variant="destructive" />
+        ) : (
+          <Trash2 className="h-4 w-4 group-hover:text-red-500" />
+        )}
       </Button>
     </>
   );

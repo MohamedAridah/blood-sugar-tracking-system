@@ -1,60 +1,59 @@
-import Link from "next/link";
+
 import {
   CakeIcon,
-  Calendar,
-  Database,
-  Edit,
   ForkKnifeCrossedIcon,
   Home,
   Inbox,
-  Info,
   Plus,
-  Search,
-  Settings,
   User2,
 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import User from "@/components/User";
+import { NavItem, NavMain } from "@/components/nav-main";
 
-const items = [
+const items: NavItem[] = [
   {
     title: "Home",
     url: "/",
-    icon: Home,
+    icon: <Home />,
+    isActive: true,
+    items: [],
   },
   {
     title: "Measurement",
     url: "/measurements",
-    icon: Inbox,
-  },
-
-  {
-    title: "New Measurement",
-    url: "/measurements/new",
-    icon: Plus,
+    icon: <Inbox />,
+    items: [
+      {
+        title: "New Measurement",
+        url: "/measurements/new",
+        icon: <Plus />,
+        items: [],
+      },
+    ],
   },
   {
     title: "Meals",
     url: "/meals/",
-    icon: CakeIcon,
-  },
-  {
-    title: "New Meal",
-    url: "/meals/new",
-    icon: ForkKnifeCrossedIcon,
+    icon: <CakeIcon />,
+    items: [
+      {
+        title: "New Meal",
+        url: "/meals/new",
+        icon: <ForkKnifeCrossedIcon />,
+        items: [],
+      },
+    ],
   },
   {
     title: "Profile",
     url: "/account",
-    icon: User2,
+    icon: <User2 />,
+    items: [],
   },
 ];
 
@@ -62,18 +61,7 @@ export default function AppSidebar() {
   return (
     <Sidebar className="h-[calc(100vh-45px)]" collapsible="icon">
       <SidebarContent>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} closeAfter asChild>
-                <Link href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+        <NavMain items={items} />
       </SidebarContent>
       <SidebarFooter className="gap-0 p-0">
         <User showUserInfo />

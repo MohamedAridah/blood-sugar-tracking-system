@@ -575,6 +575,8 @@ const SidebarMenuButton = React.forwardRef<
         data-size={size}
         data-active={isActive}
         onClick={() => {
+          console.log('clicked');
+          
           if (!isMobile || !closeAfter) return;
           setOpenMobile(false);
         }}

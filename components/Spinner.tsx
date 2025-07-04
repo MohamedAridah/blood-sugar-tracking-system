@@ -4,9 +4,13 @@ import clsx from "clsx";
 import { cn } from "@/lib/utils";
 
 const spinnerVariants = cva(
-  "border border-gray-400 border-t-transparent rounded-full animate-spin",
+  "border !border-t-transparent rounded-full animate-spin",
   {
     variants: {
+      variant: {
+        default: "border-gray-400",
+        destructive: "border-red-600",
+      },
       size: {
         sm: "size-4",
         md: "size-6",
@@ -14,6 +18,7 @@ const spinnerVariants = cva(
       },
     },
     defaultVariants: {
+      variant: "default",
       size: "sm",
     },
   }
@@ -30,6 +35,7 @@ const Spinner = ({
   fullScreen = false,
   height,
   size,
+  variant,
   ...props
 }: SpinnerProps) => {
   return (
@@ -40,14 +46,14 @@ const Spinner = ({
       className={cn(
         clsx(
           "flex flex-col items-center gap-2 justify-center space-x-2",
-          height && `h-[${height}vh]  w-full`,
-          fullScreen && "h-screen  w-full"
+          height && `h-[${height}vh]`,
+          fullScreen && "h-screen w-full"
         )
       )}
       {...props}
     >
-      <div className={cn(spinnerVariants({ size }))}></div>
-      {text && <p>{text}</p>}
+      <div className={cn(spinnerVariants({ size, variant }))}></div>
+      {text ? <p>{text}</p> : null}
     </div>
   );
 };
